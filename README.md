@@ -1,4 +1,4 @@
-# Python 3 version of msgpack lib
+# For python 3
 
 Basic usage
 ============

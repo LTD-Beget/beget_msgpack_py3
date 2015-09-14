@@ -1,0 +1,2 @@
+# Need for request
+git+https://github.com/LTD-Beget/msgpack-rpc-python
