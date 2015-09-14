@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 try:
-    from setuptools import setup
+    from setuptools import setup, find_packages
 except ImportError:
     print('First, install the pip, please.')
     import sys
@@ -26,10 +26,5 @@ setup(name=package_folder,
           'http://github.com/LTD-Beget/msgpack-rpc-python/tarball/master#egg=msgpack-rpc-python'
       ],
 
-      packages=[package_folder,
-                package_folder + '.lib',
-                package_folder + '.lib.fastcgi',
-                package_folder + '.lib.msgpack',
-                package_folder + '.lib.errors',
-                package_folder + '.lib.errors.types']
+      packages=find_packages()
       )
