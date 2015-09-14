@@ -52,7 +52,7 @@ from .logger import Logger
 from .errors.error_collection import ErrorCollection
 
 
-class Response():
+class Response:
 
     STATUS_SUCCESS = "success"
     STATUS_ERROR = "error"

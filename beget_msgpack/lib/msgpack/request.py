@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import msgpackrpc
-from msgpackrpc.error import TimeoutError, TransportError
+from msgpackrpc.error import ArgumentError
 import beget_msgpack
 import traceback
 import socket
@@ -36,7 +36,7 @@ class Request(object):
         if len(route.split("/")) != 2:
             error_msg = "Route must be in 'controller/action' format"
             self.logger.error(error_msg)
-            raise StandardError(error_msg)
+            raise ArgumentError(error_msg)
 
         response_factory = beget_msgpack.ResponseFactory()
 
@@ -58,7 +58,7 @@ class Request(object):
         # Перехватываем все остальные ошибки
         except Exception as e:
             self.logger.error('msgpack->Request: Exception: %s\n'
-                              '  %s', e.message, traceback.format_exc())
+                              '  %s', str(e), traceback.format_exc())
             response = response_factory.get_response_by_request_error(message=str(e))
 
         return response

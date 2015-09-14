@@ -1,4 +1,4 @@
-from request_factory import RequestFactory
+from .request_factory import RequestFactory
 
 
 class Transport:

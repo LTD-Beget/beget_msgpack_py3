@@ -1,4 +1,3 @@
-
 import logging
 import uuid
 
@@ -18,7 +17,7 @@ class LoggerAdapterRequestId(logging.LoggerAdapter):
         return msg, kwargs
 
 
-class Logger():
+class Logger:
 
     logger_name = 'beget.msgpack'
 

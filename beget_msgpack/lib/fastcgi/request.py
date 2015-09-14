@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-import urllib
 import base64
 import platform
 import re
@@ -9,6 +6,8 @@ import socket
 
 import beget_msgpack
 import msgpack
+
+from urllib import parse
 
 from .flup_fcgi_client import FCGIApp
 from ..logger import Logger
@@ -53,7 +52,7 @@ class Request(object):
         }
         post_params = {'secret': self.secret,
                        'inputData': base64.b64encode(msgpack.packb(kwargs))}
-        content = urllib.urlencode(post_params)
+        content = parse.urlencode(post_params)
         params = self._get_cgi_params(q_params, len(content))
         fcgi_request = FCGIApp(host=self.host, port=self.port, timeout=self.timeout)
         response_factory = beget_msgpack.ResponseFactory()

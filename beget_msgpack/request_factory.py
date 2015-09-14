@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from .lib.msgpack.request import Request as MsgpackRequest
 from .lib.fastcgi.request import Request as FcgiRequest
 from .lib.logger import Logger
@@ -81,6 +79,5 @@ class RequestFactory:
 
 
 # Custom Exceptions:
-
 class ConfigError(Exception):
     pass

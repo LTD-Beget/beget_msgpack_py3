@@ -1,5 +1,3 @@
-from .lib.response import Response
-
 import msgpack
 
 from .lib.logger import Logger

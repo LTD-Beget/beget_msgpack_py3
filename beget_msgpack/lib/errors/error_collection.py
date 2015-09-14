@@ -3,7 +3,7 @@
 from .error_constructor import ErrorConstructor
 
 
-class ErrorCollection():
+class ErrorCollection:
     """
     Хранит в себе массив ошибок и предоставляет к ним доступ
     Позволяет:
