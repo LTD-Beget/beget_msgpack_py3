@@ -11,7 +11,7 @@ package_folder = 'beget_msgpack'
 
 # Define __version__ without importing beget_amqp.
 # This allows building sdist without installing any 3rd party packages.
-exec(open(package_folder + '/_version.py').read())
+exec(open('_version.py').read())
 
 setup(name=package_folder,
       version=__version__,
