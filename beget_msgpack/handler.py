@@ -80,11 +80,12 @@ class Handler(socketserver.BaseRequestHandler, object):
             self.logger.request_id_clear()
 
     def on_message(self, message):
-        route = message[2]
+        route_byte = message[2]
+        route = route_byte.decode('UTF-8')
         arguments = message[3][0]
         self.logger.debug('Handler: \n  Route: %s\n  Arguments: %s', repr(route), repr(arguments))
 
-        front_controller = FrontController(str(route), self.controllers_prefix, self.logger)
+        front_controller = FrontController(route, self.controllers_prefix, self.logger)
         result = front_controller.run_controller(arguments)
 
         result_encoded = self.packer.pack([1, 0, None, result])
