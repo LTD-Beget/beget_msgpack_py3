@@ -1,14 +1,13 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import beget_msgpack
-import examples.config as config
+
 import logging
+from . import config
+from .controllers_msgpack import *
 
-from controllers_msgpack import *
 
-
-print 'test'
+print('test')
 
 logging.basicConfig(level=logging.CRITICAL)
 

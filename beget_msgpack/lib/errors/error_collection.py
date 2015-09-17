@@ -46,7 +46,7 @@ class ErrorCollection:
         return self.errors[self.current_index - 1]
 
     @classmethod
-    def create_by_dict(cls, request_errors):
-        error_constructor = ErrorConstructor()
+    def create_by_dict(cls, request_errors, logger=None):
+        error_constructor = ErrorConstructor(logger=logger)
         return cls(error_constructor.create_by_dict(request_errors))
 

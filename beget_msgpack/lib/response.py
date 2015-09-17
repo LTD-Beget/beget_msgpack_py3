@@ -60,7 +60,7 @@ class Response:
     # Случайное число которое не встречается в проекте
     DEFAULT_ERROR_CODE = 45689
 
-    def __init__(self, answer=None):
+    def __init__(self, answer=None, logger=None):
         self.request_status = self.STATUS_SUCCESS
         self.request_errors = {}
 
@@ -68,7 +68,10 @@ class Response:
         self.method_result = None
         self.method_errors = {}
 
-        self.logger = Logger.get_logger()
+        if logger is None:
+            self.logger = Logger.get_logger()
+        else:
+            self.logger = logger
 
         if type(answer) is dict:
             self.load(answer)
@@ -143,10 +146,10 @@ class Response:
         return self.get_request_error() or self.get_method_error()
 
     def get_request_error(self):
-        return ErrorCollection.create_by_dict(self.request_errors) if self.has_request_error() else None
+        return ErrorCollection.create_by_dict(self.request_errors, self.logger) if self.has_request_error() else None
 
     def get_method_error(self):
-        return ErrorCollection.create_by_dict(self.method_errors) if self.has_method_errors() else None
+        return ErrorCollection.create_by_dict(self.method_errors, self.logger) if self.has_method_errors() else None
 
     ################################################################################
     # Добавление информации об ошибках
