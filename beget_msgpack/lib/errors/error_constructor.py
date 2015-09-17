@@ -64,7 +64,7 @@ class ErrorConstructor:
         self.logger.debug('ErrorConstructor: create by dict: %s', repr(errors_dict))
         result = []
 
-        for errors_type, errors_list_same_type in errors_dict.items():
+        for errors_type, errors_list_same_type in list(errors_dict.items()):
             for error in errors_list_same_type:
                 obj = self.create_error_obj_by_type_and_property(errors_type, error)
                 result.append(obj)

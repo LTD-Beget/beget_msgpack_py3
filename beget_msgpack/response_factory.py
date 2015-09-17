@@ -22,9 +22,14 @@ class ResponseFactory:
             self.logger = logger
         pass
 
-    def get_response_by_msgpack_answer(self, answer):
-        self.logger.debug('ResponseFactory:by_msgpack: get answer: %s', answer)
-        return Response(answer)
+    def get_response_by_msgpack_answer(self, answer, encode=True):
+        if encode:
+            answer_unicode = self.byte_to_unicode_dict(answer)
+            self.logger.debug('ResponseFactory:by_fcgi: change it to: %s', repr(answer_unicode))
+            return Response(answer_unicode)
+        else:
+            self.logger.debug('ResponseFactory:by_msgpack: get answer: %s', answer)
+            return Response(answer)
 
     def get_response_by_fcgi_answer(self, answer, encode=True):
         code, header, raw_answer, error = answer

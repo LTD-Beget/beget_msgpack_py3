@@ -36,7 +36,7 @@ class ErrorCollection:
         # Возвращаем объект итератора
         return self
 
-    def next(self):
+    def __next__(self):
         # Если вышли за пределы, то заканчиваем итерацию
         if len(self.errors) <= self.current_index:
             raise StopIteration
