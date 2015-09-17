@@ -18,9 +18,21 @@ class Controller:
         self.logger = logger
 
         self._response = response
-        self._method_args = method_args
+        # Внимание! значения аргументов всегда byte из за безопасной передачи в msgpack,
+        # к UTF-8 приводятся только ключи (аргументы экшена)
+        self._method_args = self.byte_to_unicode_dict_only_keys(method_args)
 
         self.init_after()
+
+    def byte_to_unicode_dict_only_keys(self, answer):
+        decoded = {}
+        for key in answer:
+            unicode_key = key.decode("utf-8")
+            if isinstance(answer[key], dict):
+                decoded[unicode_key] = self.byte_to_unicode_dict_only_keys(answer[key])
+            else:
+                decoded[unicode_key] = answer[key]
+        return decoded
 
     def init_before(self):
         pass
