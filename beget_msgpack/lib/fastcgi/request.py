@@ -15,12 +15,14 @@ from ..errors.error_constructor import ErrorConstructor
 
 
 class Request(object):
-    def __init__(self, host, port, root, script, secret, timeout=None):
+    def __init__(self, host, port, root, script, secret, user=None, password=None, timeout=None):
         self.host = host
         self.port = int(port)
         self.root = root
         self.script = script
         self.secret = secret
+        self.user = user
+        self.password = password
         self.logger = Logger.get_logger()
         self.timeout = timeout
 
@@ -51,6 +53,8 @@ class Request(object):
             "r": "%s/%s" % (controller_name, action_name)
         }
         post_params = {'secret': self.secret,
+                       'custLogin': self.user,
+                       'custPassword': self.password,
                        'inputData': base64.b64encode(msgpack.packb(kwargs))}
         content = parse.urlencode(post_params)
         params = self._get_cgi_params(q_params, len(content))
@@ -63,7 +67,7 @@ class Request(object):
             response = response_factory.get_response_by_fcgi_answer(answer)
         except (socket.gaierror, socket.error) as e:
             self.logger.error('msgpack->Request: Exception: Can\'t connect: %s\n'
-                              '  %s', e.message, traceback.format_exc())
+                              '  %s', str(e), traceback.format_exc())
             response = response_factory.get_response_by_request_error(ErrorConstructor.TYPE_ERROR_CONNECTION,
                                                                       str(e),
                                                                       ErrorConstructor.CODE_ERROR_CONNECTION)
@@ -80,12 +84,12 @@ class Request(object):
             'REQUEST_METHOD': 'POST',
             'SCRIPT_FILENAME': self.get_path_script(),
             'SCRIPT_NAME': self.get_path_script(),
-            'QUERY_STRING': urllib.urlencode(q_params),
+            'QUERY_STRING': parse.urlencode(q_params),
             'REQUEST_URI': self.get_document_uri(),
             'DOCUMENT_URI': self.get_document_uri(),
             'SERVER_SOFTWARE': 'php/fcgiclient',
-            'REMOTE_ADDR': '1.2.3.4',          # todo: должен передаваться с конфигом - интерфесов может быть много
-            'REMOTE_PORT': '9985',             # todo: + подключение к стороннему сервису слишком долгая операция
+            'REMOTE_ADDR': '1.2.3.4',  # todo: должен передаваться с конфигом - интерфесов может быть много
+            'REMOTE_PORT': '9985',  # todo: + подключение к стороннему сервису слишком долгая операция
             'SERVER_ADDR': self.host,
             'SERVER_PORT': str(self.port),
             'SERVER_NAME': platform.node(),
@@ -104,5 +108,6 @@ class Request(object):
         name_lowercase_first_char = name[0].lower() + name[1:]
         return self.camel_2_dashed(name_lowercase_first_char)
 
-    def camel_2_dashed(self, string):
+    @staticmethod
+    def camel_2_dashed(string):
         return re.sub('(((?<=[a-z])[A-Z])|([A-Z](?![A-Z]|$)))', '-\\1', string).lower()

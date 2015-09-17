@@ -8,8 +8,10 @@ class RequestFactory:
     TYPE_FCGI = 'fcgi'
     TYPE_MSGPACK = 'msgpack'
 
-    def __init__(self, config):
+    def __init__(self, config, user=None, password=None):
         self.config = config
+        self.user = user
+        self.password = password
         self.logger = Logger.get_logger()
 
     def get_request(self, server_name):
@@ -61,10 +63,12 @@ class RequestFactory:
                                server_config['port'],
                                server_config['script_dir'],
                                server_config['script_name'],
-                               server_config['secret'])
+                               server_config['secret'],
+                               user=self.user,
+                               password=self.password)
 
         elif server_config['type'] == self.TYPE_MSGPACK:
-            if not 'port' in server_config:
+            if 'port' not in server_config:
                 error_msg = 'RequestFactory: For msgpack connection, you must set "port" in config'
                 self.logger.critical(error_msg)
                 raise ConfigError(error_msg)

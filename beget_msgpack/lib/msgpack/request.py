@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import msgpackrpc
 from msgpackrpc.error import ArgumentError
 import beget_msgpack
@@ -51,7 +49,7 @@ class Request(object):
         # Перехватываем ошибки подключения и возвращаем информацию о проблеме.
         except (msgpackrpc.error.TimeoutError, msgpackrpc.error.TransportError, socket.gaierror) as e:
             self.logger.error('msgpack->Request: Exception: Can\'t connect: %s\n'
-                              '  %s', e.message, traceback.format_exc())
+                              '  %s', str(e), traceback.format_exc())
             response = response_factory.get_response_by_request_error(ErrorConstructor.TYPE_ERROR_CONNECTION,
                                                                       str(e),
                                                                       ErrorConstructor.CODE_ERROR_CONNECTION)
