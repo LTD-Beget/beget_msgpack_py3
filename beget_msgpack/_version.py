@@ -1,5 +1,5 @@
 
-__version__ = '0.4.10'
+__version__ = '0.4.11'
 
 """
 0.4.7 - change py-prefork-server to SocketServer
