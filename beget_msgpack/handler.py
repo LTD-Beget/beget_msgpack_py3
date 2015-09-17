@@ -18,15 +18,19 @@ class Handler(socketserver.BaseRequestHandler, object):
     """
 
     def __init__(self, request, client_address, server,
-                 controllers_prefix, timeout_receive=5):
+                 controllers_prefix, timeout_receive=5, logger=None):
 
         self.controllers_prefix = controllers_prefix
-        self.logger = Logger.get_logger()
         self.packer = msgpack.Packer(default=lambda x: x.to_msgpack())
         self.unpacker = msgpack.Unpacker()
         self.response = Response()
         self.timeout_receive = timeout_receive
         self.time_start = None
+
+        if logger is None:
+            self.logger = Logger.get_logger()
+        else:
+            self.logger = logger
 
         super(Handler, self).__init__(request, client_address, server)
 
@@ -39,8 +43,8 @@ class Handler(socketserver.BaseRequestHandler, object):
     def handle(self):
         try:
             # Получаем все данные из сокета
-            message = ''
-            data = ''
+            message = []
+            data = b''
             while True:
 
                 # Устанавливаем таймаут на получение данных из сокета
@@ -80,7 +84,7 @@ class Handler(socketserver.BaseRequestHandler, object):
         arguments = message[3][0]
         self.logger.debug('Handler: \n  Route: %s\n  Arguments: %s', repr(route), repr(arguments))
 
-        front_controller = FrontController(route, self.controllers_prefix, self.logger)
+        front_controller = FrontController(str(route), self.controllers_prefix, self.logger)
         result = front_controller.run_controller(arguments)
 
         result_encoded = self.packer.pack([1, 0, None, result])

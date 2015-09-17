@@ -15,7 +15,7 @@ from ..errors.error_constructor import ErrorConstructor
 
 
 class Request(object):
-    def __init__(self, host, port, root, script, secret, user=None, password=None, timeout=None):
+    def __init__(self, host, port, root, script, secret, user=None, password=None, timeout=None, logger=None):
         self.host = host
         self.port = int(port)
         self.root = root
@@ -23,8 +23,12 @@ class Request(object):
         self.secret = secret
         self.user = user
         self.password = password
-        self.logger = Logger.get_logger()
         self.timeout = timeout
+
+        if logger is None:
+            self.logger = Logger.get_logger()
+        else:
+            self.logger = logger
 
     def set_timeout(self, sec_int):
         assert isinstance(sec_int, (int, float))

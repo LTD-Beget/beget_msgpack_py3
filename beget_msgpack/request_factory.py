@@ -8,11 +8,15 @@ class RequestFactory:
     TYPE_FCGI = 'fcgi'
     TYPE_MSGPACK = 'msgpack'
 
-    def __init__(self, config, user=None, password=None):
+    def __init__(self, config, user=None, password=None, logger=None):
         self.config = config
         self.user = user
         self.password = password
-        self.logger = Logger.get_logger()
+
+        if logger is None:
+            self.logger = Logger.get_logger()
+        else:
+            self.logger = logger
 
     def get_request(self, server_name):
         """

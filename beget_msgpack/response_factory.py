@@ -15,8 +15,11 @@ class ResponseFactory:
             После получения утвержденного формата сообщения, передаем его в Request и возвращаем клиенту
     """
 
-    def __init__(self):
-        self.logger = Logger.get_logger()
+    def __init__(self, logger=None):
+        if logger is None:
+            self.logger = Logger.get_logger()
+        else:
+            self.logger = logger
         pass
 
     def get_response_by_msgpack_answer(self, answer):

@@ -24,8 +24,11 @@ class ErrorConstructor:
     CODE_ERROR_CONNECTION = ErrorConnection.CODE_DEFAULT
     CODE_ERROR_IN_ACTION = ErrorAction.CODE_DEFAULT
 
-    def __init__(self):
-        self.logger = Logger.get_logger()
+    def __init__(self, logger):
+        if logger is None:
+            self.logger = Logger.get_logger()
+        else:
+            self.logger = logger
 
     def create_by_dict(self, errors_dict):
         """
