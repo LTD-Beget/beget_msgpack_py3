@@ -28,8 +28,9 @@ class ResponseFactory:
             self.logger.debug('ResponseFactory:by_fcgi: change it to: %s', repr(answer_unicode))
             return Response(answer_unicode)
         else:
-            self.logger.debug('ResponseFactory:by_msgpack: get answer: %s', answer)
-            return Response(answer)
+            answer_encoded = self.byte_to_unicode_dict_only_keys(answer)
+            self.logger.debug('ResponseFactory:by_msgpack: get answer: %s', repr(answer_encoded))
+            return Response(answer_encoded)
 
     def get_response_by_fcgi_answer(self, answer, encode=True):
         code, header, raw_answer, error = answer
