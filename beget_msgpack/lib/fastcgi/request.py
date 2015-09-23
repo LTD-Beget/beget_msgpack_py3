@@ -78,6 +78,50 @@ class Request(object):
         self.logger.info('result of request: %s', response.get_method_result())
         return response
 
+    def request_bytes(self, route, **kwargs):
+        self.logger.debug('fcgi->Request->request:\n'
+                          '  host: %s\n'
+                          '  port: %s\n'
+                          '  route: %s\n'
+                          '  arguments: %s\n', self.host, self.port, route, repr(kwargs))
+
+        route_strip = route.strip().split('/')
+
+        if len(route_strip) != 2:
+            error_msg = 'Route: %s  But route - must be in \'controller/action\' format' % route
+            self.logger.error(error_msg)
+            raise Exception(error_msg)
+
+        controller_name = self.prepare_path_name(route_strip[0])
+        action_name = self.prepare_path_name(route_strip[1])
+        self.logger.debug('fcgi->Request->request:\n'
+                          '  controller: %s\n'
+                          '  action: %s', controller_name, action_name)
+        q_params = {
+            "r": "%s/%s" % (controller_name, action_name)
+        }
+        post_params = {'secret': self.secret,
+                       'custLogin': self.user,
+                       'custPassword': self.password,
+                       'inputData': base64.b64encode(msgpack.packb(kwargs))}
+        content = parse.urlencode(post_params)
+        params = self._get_cgi_params(q_params, len(content))
+        fcgi_request = FCGIApp(host=self.host, port=self.port, timeout=self.timeout)
+        response_factory = beget_msgpack.ResponseFactory()
+        self.logger.debug('Request: send:\n    params: %s\n    content: %s\n', repr(params), repr(content))
+        self.logger.info('request to: %s,  route: %s,  args:%s', self.host, route, repr(kwargs))
+        try:
+            answer = fcgi_request(params, content)
+            response = response_factory.get_response_by_fcgi_answer(answer, encode=False)
+        except (socket.gaierror, socket.error) as e:
+            self.logger.error('msgpack->Request: Exception: Can\'t connect: %s\n'
+                              '  %s', str(e), traceback.format_exc())
+            response = response_factory.get_response_by_request_error(ErrorConstructor.TYPE_ERROR_CONNECTION,
+                                                                      str(e),
+                                                                      ErrorConstructor.CODE_ERROR_CONNECTION)
+        self.logger.info('result of request: %s', response.get_method_result())
+        return response
+
     def do(self, method, **kwargs):
         """alias"""
         return self.request(method, **kwargs)
