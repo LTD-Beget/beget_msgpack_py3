@@ -59,7 +59,7 @@ class Request(object):
         post_params = {'secret': self.secret,
                        'custLogin': self.user,
                        'custPassword': self.password,
-                       'inputData': base64.b64encode(msgpack.packb(kwargs))}
+                       'inputData': base64.b64encode(msgpack.packb(kwargs, unicode_errors='surrogatepass'))}
         content = parse.urlencode(post_params)
         params = self._get_cgi_params(q_params, len(content))
         fcgi_request = FCGIApp(host=self.host, port=self.port, timeout=self.timeout)
@@ -103,7 +103,7 @@ class Request(object):
         post_params = {'secret': self.secret,
                        'custLogin': self.user,
                        'custPassword': self.password,
-                       'inputData': base64.b64encode(msgpack.packb(kwargs))}
+                       'inputData': base64.b64encode(msgpack.packb(kwargs, unicode_errors='surrogatepass'))}
         content = parse.urlencode(post_params)
         params = self._get_cgi_params(q_params, len(content))
         fcgi_request = FCGIApp(host=self.host, port=self.port, timeout=self.timeout)
